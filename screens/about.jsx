@@ -9,6 +9,7 @@ function AboutScreen({ navigation }) {
         title="Ir para Home"
         onPress={() => navigation.navigate("Home")}
       />
-    </View>
-  )
+    </View> // ... código anterior do return
+  );
 }
+export default AboutScreen;
