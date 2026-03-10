@@ -1,24 +1,28 @@
-import "react-native-gesture-handler";
-import * as React from "react";
-import { View, Text } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
-import { createDrawerNavigator } from "@react-navigation/drawer";
-import EstilosScreen from "./screens/estilos";
-import HomeScreen from "./screens/home";
-import AboutScreen from "./screens/about";
+import { createStackNavigator } from "@react-navigation/stack";
+import React from "react";
+// Importando as telas da pasta screens
+import ProdutoForm from "./screens/ProdutoForm";
+import ProdutoLista from "./screens/ProdutoLista";
+import GestorDados from "./screens/dados/GestorDados";
+new GestorDados().apagarTudo();
+const Stack = createStackNavigator();
 
-const Drawer = createDrawerNavigator();
-
-function App() {
+export default function App() {
   return (
     <NavigationContainer>
-      <Drawer.Navigator initialRouteName="Home">
-        <Drawer.Screen name="Estilos" component={EstilosScreen} />
-        <Drawer.Screen name="Home" component={HomeScreen} />
-        <Drawer.Screen name="About" component={AboutScreen} />
-      </Drawer.Navigator>
+      <Stack.Navigator initialRouteName="ListaProd">
+        <Stack.Screen
+          name="ListaProd"
+          options={{ title: "Listagem de Produtos" }}
+          component={ProdutoLista}
+        />
+        <Stack.Screen
+          name="NovoProd"
+          options={{ title: "Novo Produto" }}
+          component={ProdutoForm}
+        />
+      </Stack.Navigator>
     </NavigationContainer>
   );
 }
-
-export default App;
