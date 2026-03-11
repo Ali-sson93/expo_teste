@@ -5,7 +5,7 @@ import React from "react";
 import ProdutoForm from "./screens/ProdutoForm";
 import ProdutoLista from "./screens/ProdutoLista";
 import GestorDados from "./screens/dados/GestorDados";
-new GestorDados().apagarTudo();
+
 const Stack = createStackNavigator();
 
 export default function App() {

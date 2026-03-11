@@ -4,7 +4,7 @@ import { styles } from "./CommonStyles";
 
 export default function ProdutoItem(props) {
   return (
-    <View style={styles.container} id={props.produto.codigo}>
+    <View style={styles.container}>
       <Text style={styles.textItem}>
         {props.produto.codigo} - {props.produto.nome}
       </Text>

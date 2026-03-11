@@ -11,11 +11,9 @@ export default function ProdutoForm({ navigation }) {
   const [quantidade, setQuantidade] = useState("");
 
   const salvar = () => {
-    // prodAux criado exatamente como no seu material
     const prodAux = new Produto(parseInt(codigo), nome, parseInt(quantidade));
-    gestor.adicionar(prodAux).then(() => {
-      navigation.navigate("ListaProd");
-    });
+    gestor.adicionar(prodAux);
+    navigation.navigate("ListaProd");
   };
 
   return (

@@ -14,23 +14,20 @@ export default function ProdutoLista({ navigation }) {
   const isFocused = useIsFocused();
 
   // Toda vez que a tela focar, buscamos os dados
+  // Buscando os dados agora direto do SQL
   useEffect(() => {
-    gestor.obterTodos().then((objs) => setProdutos(objs));
+    const objs = gestor.obterTodos();
+    setProdutos(objs);
   }, [isFocused]);
 
-  const myKeyExtractor = (item) => {
-    // Se o item existir e tiver código, usa o código.
-    // Se não, gera um número aleatório só para não quebrar a tela.
-    return item && item.codigo
-      ? item.codigo.toString()
-      : Math.random().toString();
-  };
-
   function excluirProduto(codigo) {
-    gestor.remover(codigo).then(() => {
-      gestor.obterTodos().then((objs) => setProdutos(objs));
-    });
+    gestor.remover(codigo);
+    const objs = gestor.obterTodos();
+    setProdutos(objs);
   }
+  const myKeyExtractor = (item) => {
+    return item.codigo.toString();
+  };
 
   return (
     <View style={styles.container}>

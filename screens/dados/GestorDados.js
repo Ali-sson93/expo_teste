@@ -1,41 +1,55 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
-// Note os dois pontos (../../) para achar a pasta models saindo de dentro de 'dados'
+// Importamos o SQLite moderno do Expo
+import * as SQLite from "expo-sqlite";
 import { Produto } from "../../models/Produto";
 
+// O Expo já abre a base de dados de forma simples
+const db = SQLite.openDatabaseSync("LojaDatabase.db");
+
 class GestorDados {
-  async apagarTudo() {
-    await AsyncStorage.clear();
+  constructor() {
+    // Quando o Gestor for chamado, ele cria a tabela se não existir (DDL)
+    this.criarBanco();
   }
 
-  // Remover um produto pelo código
-  async remover(codigo) {
-    try {
-      await AsyncStorage.removeItem(codigo.toString());
-    } catch (e) {
-      console.error("Erro ao remover do banco", e);
+  // Criação da Tabela (SQL: CREATE TABLE)
+  criarBanco() {
+    db.execSync(`
+      CREATE TABLE IF NOT EXISTS PRODUTO (
+        CODIGO INTEGER PRIMARY KEY,
+        NOME VARCHAR(20),
+        QUANTIDADE INTEGER
+      );
+    `);
+  }
+
+  // Adicionar Produto (SQL: INSERT)
+  adicionar(produto) {
+    // Usamos o runSync para comandos que modificam dados
+    db.runSync(
+      "INSERT INTO PRODUTO (CODIGO, NOME, QUANTIDADE) VALUES (?, ?, ?);",
+      [produto.codigo, produto.nome, produto.quantidade],
+    );
+  }
+
+  // Remover Produto (SQL: DELETE)
+  remover(codigo) {
+    db.runSync("DELETE FROM PRODUTO WHERE CODIGO = ?;", [codigo]);
+  }
+
+  // Obter Todos os Produtos (SQL: SELECT)
+  obterTodos() {
+    // Usamos o getAllSync para puxar os dados
+    const results = db.getAllSync("SELECT * FROM PRODUTO;");
+
+    // Convertendo as linhas do banco de volta para o objeto Produto
+    let objetos = [];
+    for (let i = 0; i < results.length; i++) {
+      let linha = results[i];
+      let produto = new Produto(linha.CODIGO, linha.NOME, linha.QUANTIDADE);
+      objetos.push(produto);
     }
-  }
-
-  // Buscar todos os produtos salvos
-  async obterTodos() {
-    try {
-      const keys = await AsyncStorage.getAllKeys();
-      const itens = await AsyncStorage.multiGet(keys);
-
-      // Transforma o texto do banco de volta em objetos de Produto
-      return itens.map((item) => {
-        return JSON.parse(item[1]);
-      });
-    } catch (e) {
-      console.error("Erro ao buscar dados", e);
-      return [];
-    }
-  }
-
-  async apagarTudo() {
-    await AsyncStorage.clear();
+    return objetos;
   }
 }
 
-// O segredo é exportar a classe já instanciada (new)
 export default GestorDados;
